@@ -36,3 +36,13 @@ assert_healthy() {
   [ ! -s "$BATS_TEST_TMPDIR/stderr" ]
   ! screen | grep -q -E "Lua error|Deprecated API|Failed to load plugin"
 }
+
+# the text is on the screen, and the text is not on the screen. A `!` in a test does not fail it, as
+# bats does not stop at a command that is negated, so the check is in a function that returns its status
+assert_screen() {
+  screen | grep -q "$1"
+}
+
+refute_screen() {
+  ! screen | grep -q "$1"
+}

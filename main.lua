@@ -5,25 +5,25 @@
 --- first argument names (image, pdf, svg) and gives the image it draws a larger copy, centered in
 --- the pane. Yazi's own preloader still makes the cache that the built-in previewer reads.
 ---
---- Optional setup, in init.lua:
+--- Options are arguments of the previewer rule in yazi.toml, as Yazi runs a previewer in a Lua state
+--- of its own, where `setup` of init.lua has not run:
 ---
----   require("viewer"):setup { max_up = 4, fill = 0.75 }
+---   { mime = "image/*", run = "viewer image --max_up=4 --fill=0.75" }
 
 local M = {}
 
 -- max_up: how many times larger than it is an image can be drawn, a small image is soft when it is
 -- larger. fill: the part of the pane that an image fills, the rest is the margin around it
-local config = { max_up = 4, fill = 0.75 }
+local DEFAULTS = { max_up = 4, fill = 0.75 }
 
---- Change the defaults. Keys that are not given keep their value.
-function M:setup(opts)
-	opts = opts or {}
-	if type(opts.max_up) == "number" and opts.max_up >= 1 then
-		config.max_up = opts.max_up
-	end
-	if type(opts.fill) == "number" and opts.fill > 0 and opts.fill <= 1 then
-		config.fill = opts.fill
-	end
+-- the options of a run, from its arguments: a number that is not valid is the default
+local function options(args)
+	local max_up = tonumber(args.max_up)
+	local fill = tonumber(args.fill)
+	return {
+		max_up = (max_up and max_up >= 1) and max_up or DEFAULTS.max_up,
+		fill = (fill and fill > 0 and fill <= 1) and fill or DEFAULTS.fill,
+	}
 end
 
 -- the image made larger, in a folder of the temporary files, which a reboot clears
@@ -55,13 +55,9 @@ local function enlarged(url, factor)
 end
 
 -- ya.image_show takes the area of the pane: this gives it the part of the pane in the middle
-local function install()
-	if ya.image_show_centered then
-		return
-	end
-	ya.image_show_centered = true
-
-	local show = ya.image_show
+local function install(config)
+	local show = ya.image_show_original or ya.image_show
+	ya.image_show_original = show
 	ya.image_show = function(url, area)
 		local info = ya.image_info(url)
 		local cw, ch = rt.term.cell_size()
@@ -93,7 +89,7 @@ local function install()
 end
 
 function M:peek(job)
-	install()
+	install(options(job.args))
 	local name = job.args[1]
 	if not name then
 		return ya.preview_widget(job, Err("viewer: the previewer to run is missing, use `run = \"viewer image\"`"))

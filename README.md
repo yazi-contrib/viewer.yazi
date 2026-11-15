@@ -4,10 +4,28 @@
 
 [![CI](https://github.com/yazi-contrib/viewer.yazi/actions/workflows/ci.yml/badge.svg)](https://github.com/yazi-contrib/viewer.yazi/actions/workflows/ci.yml) [![Release](https://img.shields.io/github/v/release/yazi-contrib/viewer.yazi)](https://github.com/yazi-contrib/viewer.yazi/releases) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+## Screenshots
+
+Without the plugin, Yazi draws the image from the corner of the pane, as large as the image is:
+
+![Yazi without the plugin: a small image in the corner of the preview pane](docs/viewer-before.png)
+
+With `viewer.yazi`, the image is enlarged to fill most of the pane and sits in the middle:
+
+![Yazi with viewer.yazi: the image is larger and centered in the preview pane](docs/viewer-after.png)
+
+The same for the pages of a PDF and for SVG files:
+
+![A page of a PDF, centered and enlarged](docs/viewer-pdf.png)
+
+![An SVG file, centered and enlarged](docs/viewer-svg.png)
+
 ## Dependencies
 
 - [Yazi](https://yazi-rs.github.io) (the latest release)
 - [imagemagick](https://imagemagick.org) - to make the larger copy of an image (`magick`)
+- [resvg](https://github.com/linebender/resvg) - for SVG files, as Yazi's own SVG previewer needs it
+- [poppler](https://poppler.freedesktop.org) (`pdftoppm`) - for PDF files, as Yazi's own PDF previewer needs it
 
 ## Installation
 
@@ -42,21 +60,24 @@ A reboot clears the folder.
 
 ## Configuration
 
-Optionally, in `init.lua`:
+The options are arguments of the previewer rule in `yazi.toml`:
 
-```lua
-require("viewer"):setup {
-  max_up = 4,     -- how many times larger than it is an image can be drawn
-  fill = 0.75,    -- the part of the pane that an image fills, the rest is the margin
-}
+```toml
+[plugin]
+prepend_previewers = [
+  { mime = "image/{jpeg,png,gif,webp,bmp,tiff}", run = "viewer image --max_up=4 --fill=0.75" },
+]
 ```
 
-| Option   | Default | Meaning                                                              |
-|----------|---------|----------------------------------------------------------------------|
-| `max_up` | `4`     | The most that an image is enlarged. A small image is soft when it is |
-| `fill`   | `0.75`  | The part of the pane that an image fills, between 0 and 1            |
+| Option     | Default | Meaning                                                              |
+|------------|---------|----------------------------------------------------------------------|
+| `--max_up` | `4`     | The most that an image is enlarged. A small image is soft when it is |
+| `--fill`   | `0.75`  | The part of the pane that an image fills, between 0 and 1            |
 
 An image is never drawn larger than `max_width` and `max_height` of the `[preview]` section of `yazi.toml`.
+
+They are arguments and not a call to `setup` in `init.lua`, because Yazi runs a previewer in a Lua state of its
+own, where `init.lua` has not run.
 
 ## How it works, and what can break
 

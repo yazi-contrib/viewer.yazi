@@ -2,11 +2,10 @@ load test_helper
 
 setup() {
   setup_yazi viewer
-  echo 'require("viewer"):setup { max_up = 3, fill = 0.8 }' >"$YAZI_CONFIG_HOME/init.lua"
   cat >"$YAZI_CONFIG_HOME/yazi.toml" <<'EOF'
 [plugin]
 prepend_previewers = [
-  { mime = "image/{jpeg,png,gif,webp,bmp,tiff}", run = "viewer image" },
+  { mime = "image/{jpeg,png,gif,webp,bmp,tiff}", run = "viewer image --max_up=3 --fill=0.8" },
 ]
 EOF
   magick -size 40x30 xc:red "$WORK/a.png"
@@ -21,7 +20,7 @@ teardown() { stop_yazi; }
   assert_healthy
 }
 
-@test "the setup of the defaults does not break the start" {
+@test "the options in the rule do not break the start" {
   start_yazi
   assert_healthy
   screen | grep -q "a.png"
