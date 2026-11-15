@@ -86,7 +86,7 @@ this folder, and fail on an error of Lua, a deprecated API, or a start that does
 
 ## The yazi-contrib ecosystem
 
-Plugins of Yazi, one repository for each: `viewer.yazi`, `layout.yazi`, `starship.yazi`.
+Plugins of Yazi, one repository for each: `viewer.yazi`, `layout.yazi`, `starship.yazi`, `finder.yazi`.
 
 ## License
 
