@@ -4,21 +4,7 @@
 
 [![CI](https://github.com/yazi-contrib/viewer.yazi/actions/workflows/ci.yml/badge.svg)](https://github.com/yazi-contrib/viewer.yazi/actions/workflows/ci.yml) [![Release](https://img.shields.io/github/v/release/yazi-contrib/viewer.yazi)](https://github.com/yazi-contrib/viewer.yazi/releases) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## Screenshots
-
-Without the plugin, Yazi draws the image from the corner of the pane, as large as the image is:
-
-![Yazi without the plugin: a small image in the corner of the preview pane](docs/viewer-before.png)
-
-With `viewer.yazi`, the image is enlarged to fill most of the pane and sits in the middle:
-
-![Yazi with viewer.yazi: the image is larger and centered in the preview pane](docs/viewer-after.png)
-
-The same for the pages of a PDF and for SVG files:
-
-![A page of a PDF, centered and enlarged](docs/viewer-pdf.png)
-
-![An SVG file, centered and enlarged](docs/viewer-svg.png)
+![Yazi with viewer.yazi: the image is enlarged and centered in the preview pane](docs/screenshot.png)
 
 ## Dependencies
 
